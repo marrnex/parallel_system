@@ -1,0 +1,118 @@
+学籍番号: 201720691
+名前:小山廣人	
+課題番号：2
+題名：スレッドについて(1)
+
+
+・問題(205)
+プログラムを以下に示す。また、ファイル名は"mutex-reclock.java"である。
+///////////////////////////////////////////////////////////////
+class Func
+{
+    public synchronized void deposit( int x ) throws InterruptedException
+    {
+		Mutex_reclock.shared_resource+=x;
+    }
+    public synchronized void add_interest() throws InterruptedException
+    {
+    	int i;
+    	i = (int)(Mutex_reclock.shared_resource * 0.05) ;
+        deposit( i );
+    }
+}
+
+class Thread_A implements Runnable 
+{
+    Func b;
+
+    Thread_A( Func b )
+    {
+		this.b = b;
+    }
+    public void run()
+    {				
+
+	    try
+	    {
+			System.out.println("thread_A(): deposit( 10000 ) ... \n");
+			b.deposit( 10000 );
+			System.out.println("thread_A(): deposit( 10000 ) done. \n");
+	    }
+	    catch( InterruptedException e )
+	    {
+			System.err.println("Thread_A(): Interrupted");
+	    }
+	
+    }
+}
+
+class Thread_B implements Runnable 
+{
+    Func b;
+    Thread_B( Func b )
+    {
+		this.b = b;
+    }
+    public void run()
+    {				
+
+	    try
+	    {
+	    	System.out.println("thread_B(): add_interest() ... \n");
+	    	b.add_interest();
+	    	System.out.println("thread_B(): add_interest() done . \n");
+	    }	
+	    catch( InterruptedException e )
+	    {
+			System.err.println("Thread_B(): Interrupted");
+	    }
+	
+    }
+}
+
+
+class Mutex_reclock
+{
+	static int shared_resource;
+    public static void main(String argv[])
+    {
+    	shared_resource=1000000;
+		final Func b = new Func();
+		Thread t1 = new Thread( new Thread_A(b) );
+		t1.start();
+		Thread t2 = new Thread( new Thread_B(b) );
+		t2.start();
+	try
+	{
+	    t1.join();
+	    t2.join();
+	    System.out.println("main(): shared_resource == "+shared_resource+".");
+	}
+	catch( InterruptedException e )
+	{
+	    System.err.println("main(): Interrupted");
+	}
+    }
+}
+
+///////////////////////////////////////////////////////////////
+実行結果を以下に示す。
+///////////////////////////////////////////////////////////////
+$ javac  mutex-reclock.java 
+$ java Mutex_reclock
+thread_A(): deposit( 10000 ) ... 
+
+thread_B(): add_interest() ... 
+
+thread_A(): deposit( 10000 ) done. 
+
+thread_B(): add_interest() done . 
+
+main(): shared_resource == 1060500.
+///////////////////////////////////////////////////////////////
+
+プログラムの説明を行う。まず、メイン関数Mutex_reclockにて共有リソースである変数shared_resourceを宣言。値を代入する。次に、Funcインスタンスを宣言し、これを引数としたクラス、Tread_Aをさらに引数とし、スレッドを立ち上げる。同じようにTread_Bのスレッドも立ち上げる。そして、スレッドを実行させる。
+スレッドAでは、定数を加算させる関数、depositを実行し、スレッドBでは現在のshared_resouceの0.05倍の値を引数としたdepositを実行する関数、add_interestを実行する。
+Funcクラスでは、deposit,add_interestを記述してある。どちらもsynchronized宣言を行っているためmutex_lock()、mutex_unlock()を達成している。変数shared_resourceについては予めstatic宣言してあるため、クラスにアクセスし値を変更する。
+以上の動作を終えると、2つのスレッドはjoinによってメインクラスに戻り、shared_resource結果を表示する。
+

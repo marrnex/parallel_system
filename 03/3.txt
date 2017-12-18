@@ -1,0 +1,61 @@
+学籍番号: 201720691
+名前:小山廣人	
+課題番号：3
+題名：スレッドについて(2)
+
+・問題(301)次のプログラムは、正しいプログラムである。これを、ad hock synchronization を使った 間違った プログラムに書直しなさい。
+
+thread_A()
+{
+	//pthread_mutex_lock( mutex1 );
+	b->used==BUFFER_SIZE;
+loop:	if( b->used == BUFFER_SIZE )
+	{
+	    //pthread_cond_wait( condv1,mutex1 );
+	    goto loop;
+	}
+	//pthread_mutex_unlock( mutex1 );
+}
+
+thread_B()
+{
+	//pthread_mutex_lock( mutex1 );
+        b->used -- ;
+	//pthread_cond_broadcast( condv1 );
+	//pthread_mutex_unlock( mutex1 );
+}
+mutexを使用しない手法に書き換えた。スレッドAが起動してから、スレッドBによって減少された共有リソースb->usedを確認したらloopを抜ける。間違っている理由は、必ずしもスレッドBによって減少させたb->usedがスレッドAのb->usedに反映されるとは限らないからである。
+
+・問題(302)ロックを使う方法と比較して、スレッド固有データの利点と問題点を述べなさい。
+
+スレッド固有データはロック手法と比べ、実装が容易かつ競合が起きないという点に利点がある。しかし、mutexと相互に書き換えができないことがあるため、プロセス全体のデータを扱うときは、mutexによるロックを使用しなければならない欠点がある。
+
+・問題(303)次の Java 言語のプログラムは、銀行口座を実現したものの一部である。空欄 「/*(a)*/」から「/*(i)*/」を埋めて、デッドロックが起きないように、口座 間で送金する手続き transfer() を完成させなさい。
+
+以下、コードを示す。
+
+////////////////////////////////////////////
+class BankAccount {
+    long value;
+    synchronized long balance() { return value; }
+    synchronized void deposit(long n) { value += n; }
+    synchronized void withdraw(long n) { value -= n; }
+
+    /**/ void transfer(BankAccount other,long n) {
+        if ( other == this )//引数のアカウントが自身であったら
+            return;//変更する必要がないためそのまま
+        else if ( System.identityHashCode(this) < 
+             System.identityHashCode(other) )
+            this.doTransfer(other,n);
+        else
+            other.doTransfer(this,n);
+    }
+    synchronized void doTransfer(BankAccount other,long n) {//使用するリソースをまとめてロックする
+        /**/
+      //  if(balance()>=n){
+            withdraw( n );
+            other.deposit(n);
+       /**///}
+    }
+}
+////////////////////////////////////////////

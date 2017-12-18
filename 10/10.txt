@@ -1,0 +1,36 @@
+学籍番号: 201720691
+名前:小山廣人	
+課題番号：10
+題名：トランザクションについて
+
+・問題(1001)2つの銀行口座の間で送金するプログラムの「概略」を、トランザクションを使って簡単に書きなさい。基本となる言語としては、C言語、Java言語、Ruby言語、 または、それに類するものを使いなさい。
+void transfer(BankAccount A,BancAccount B,int money){
+	if(A==B)//自分自身を指定で終了
+		return;
+	else if(A.money<money)//所持金以下の送金で終了
+		return;
+	A.money-=money;
+	B.money+=money;
+}
+int main(){
+	BankAccount A,B;
+	A.money=1000;//初期所持金
+	B.money=2000;
+	Begin_Transaction();//トランザクション開始
+		transfer(A,B,100);//送金関数、失敗でabort()
+	Commit();//結果をCommitする
+	return 0;
+}
+
+
+・問題(1002)問題(1001) で、ロックを使う方法と比較して、トランザクションを用いる方法の利点を示しなさい。
+	トランザクションはロックと比較して、相互排除、デッドロックより抽象度が高いため楽にプログラムを作れるという利点がある。commitされるまで内容が確定されないので失敗したらデータは確定されていないので巻き戻るようなシステムが可能。
+
+・問題(1003)Argus言語のガーディアンと次の言語の要素のどれかと比較しなさい。 類似点とガーディアンの優位性を述べなさい。
+(Java の synchronized によるモニタ Monitors by "synchronized" in Java
+Pthread の mutex によるモニタ Monitors by mutex in C Pthread
+Concurrent Pascal のモニタ Monitors in Concurrent Pascal
+CSP のプロセス Processes in CSP
+Actorモデルのアクタ Actors in the Actor models)
+
+	Pthreadと比べどちらも並列に動作するオブジェクトを持つ。ガーディアンの優位な点として、クラッシュした場合にデータが消える変数、残り続ける変数の２種類が存在する。また、エントリを持つことも類似している。残り続ける変数(安定な変数)を扱い、整合性が取れると次の整合性の取れた状態になり、その間にクラッシュしたらもとに戻る。

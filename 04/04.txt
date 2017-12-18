@@ -1,0 +1,29 @@
+学籍番号: 201720691
+名前:小山廣人	
+課題番号：4
+題名：プロセス間通信について
+
+・問題(401)
+TCP を Socket API で利用した時、どのようなプロセス間通信のプリミティブとしてどのような性質があるか。
+	・双方向
+	・2つのプロセス間に結合が形成される
+	・非同期send
+	・同期receive
+
+・問題(402)
+htonl() を使った整数の送信では、バイ ト・オーダを考慮しながら、32ビットの整数(4バイトの整数, long型)を送信す るプログラムの一部を示した。これに対して、 次のプログラムは、バイト・オーダを考慮しながら、32ビットの整数(4バ イトの整数, long型)を受け取るプログラムの一部である。空欄を埋めて、プ ログラムを完成させなさい。
+
+unsigned long int hostlong, netlong;    
+receive(conn, &netlong,sizeof(netlong), 0);
+hostlong= htonl(netlong) ;
+printf("%lu\n",hostlong ); // show the recieved data.
+
+・問題(403)
+highscore-server の中で、 クライアントが put_score_client() で発した要求メッセージをアンマーシャリング している部分だけを抽出しなさい。
+
+    marbuf_init(&request,HISCORE_PROTO_MAX_MESSAGE_SIZE );
+    marbuf_unmarshal_int( &request, &cmd );
+    marbuf_unmarshal_int( &request, &score ) ;
+    marbuf_unmarshal_byte_array( &request, name, HIGHSCORE_NAME_LEN ) ;
+    marbuf_final(&request);
+
