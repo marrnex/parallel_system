@@ -2,7 +2,20 @@
 名前:	
 課題番号：2
 題名：スレッドについて(1)
+//////////////////////////////comment//////////////////////////////////
+> 10:	class Func
+> 11:	{
+> 12:	    public synchronized void deposit( int x ) throws InterruptedException
+> 13:	    {
 
+> 74:	class Mutex_reclock
+> 75:	{
+> 76:		static int shared_resource;
+
+class Func に、shared_resource を持たせ、それを synchronized で保護すべきです。
+
+問題がありますが、OK にします。
+///////////////////////////////////////////////////////////////////////
 
 ・問題(205)
 プログラムを以下に示す。また、ファイル名は"mutex-reclock.java"である。

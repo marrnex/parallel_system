@@ -2,6 +2,32 @@
 名前:	
 課題番号：7
 題名：タプル空間について
+//////////////////////////////comment//////////////////////////////////
+> 30:		try{//既に登録されているurlか確認
+> 31:			result=(Count)space.take(template, null, JavaSpace.NO_WAIT);
+> 32:			if(result!=null){//あったら初期化
+
+これは、TOCTOU問題があります。
+
+http://www.cs.tsukuba.ac.jp/~yas/cs/csys-2017/2017-11-17/index.html#toctou
+
+> 78:		Count template = new Count();
+> 79:		template.url=argv[0];
+
+> 87:			cou.content = result.content+1;//new Integer(0) ;
+> 88:			cou.url=argv[0];
+> 89:			space.write(cou, null, net.jini.core.lease.Lease.FOREVER);
+
+ok.
+
+>129:	13351120059:homework koyama$ java -classpath .:/Users/koyama/Downloads/apache-river-2.2.2/lib/jini-core.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/jini-ext.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/reggie.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/outrigger.jar Countup http://www.example.com/
+>130:	count:1
+>131:	url:http://www.example.com/
+>132:	13351120059:homework koyama$ java -classpath .:/Users/koyama/Downloads/apache-river-2.2.2/lib/jini-core.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/jini-ext.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/reggie.jar:/Users/koyama/Downloads/apache-river-2.2.2/lib/outrigger.jar Countup http://www.example.com/
+>133:	count:2
+
+ok.
+///////////////////////////////////////////////////////////////////////
 
 問題(701)タプル空間の仕組みを使ってWWW のアクセス・カウンタのような動きをするプ ログラム使って作りなさい。
 (1) 初期化プログラム

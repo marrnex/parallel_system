@@ -2,6 +2,22 @@
 名前:	
 課題番号：3
 題名：スレッドについて(2)
+//////////////////////////////comment//////////////////////////////////
+>  8:   thread_A()
+>  9:   {
+> 10:       //pthread_mutex_lock( mutex1 );
+> 11:       b->used==BUFFER_SIZE;
+> 12:   loop:   if( b->used == BUFFER_SIZE )
+> 13:       {
+
+ok.
+
+> 49:               this.doTransfer(other,n);
+> 50:           else
+> 51:               other.doTransfer(this,n);
+
+hashcode により転送方向が、逆になるのは、問題です。
+///////////////////////////////////////////////////////////////////////
 
 ・問題(301)次のプログラムは、正しいプログラムである。これを、ad hock synchronization を使った 間違った プログラムに書直しなさい。
 
